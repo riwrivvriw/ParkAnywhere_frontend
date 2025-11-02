@@ -107,7 +107,7 @@ export default function MySlot() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-      const res = await fetch("http://localhost:3000/gate/mqtt", {
+      const res = await fetch(`${API_URL}/gate/mqtt`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ command: "CLOSE" }),
