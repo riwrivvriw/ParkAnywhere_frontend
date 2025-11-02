@@ -123,10 +123,25 @@ export default function Login() {
 
         <div style={{ textAlign: "center", marginTop: "10px" }}>or</div>
 
-        <GoogleLogin
-          onSuccess={handleGoogleSuccess}
-          onError={() => setError("Google login failed")}
-        />
+        <div 
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => setError("Google login failed")}
+          />
+        </div>
+
+        {/* ปุ่ม Register */}
+        <p style={{ textAlign: "center", marginTop: "15px" }}>
+          Don't have an account?{" "}
+          <span 
+            style={{ color: "#007bff", cursor: "pointer" }} 
+            onClick={() => navigate("/register")}
+          >
+            Register
+          </span>
+        </p>
       </form>
     </div>
   );

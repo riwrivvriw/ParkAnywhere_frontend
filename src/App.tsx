@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import MySlot from "./pages/MySlot";
 import ReceiptsPage from "./pages/Receipts";
 import Sidebar from "./components/Sidebar";
+import Register from "./pages/Register";
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -17,6 +18,7 @@ function App() {
         <Routes>
           {/* หน้า Login แยกไม่มี Sidebar */}
           <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
           {/* Layout หลัก: มี Sidebar + Content */}
           <Route
