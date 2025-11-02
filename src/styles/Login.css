@@ -1,0 +1,14 @@
+html,
+body,
+#root {
+    overflow-x: hidden;
+    /* ปิด horizontal scroll */
+    margin: 0;
+    /* ลบระยะห่างภายนอก (Margin) */
+    padding: 0;
+    /* ลบระยะห่างภายใน (Padding) */
+    height: 100%;
+    /* กำหนดให้สูงเต็มพื้นที่ */
+    width: 100%;
+    /* กำหนดให้กว้างเต็มพื้นที่ */
+}
