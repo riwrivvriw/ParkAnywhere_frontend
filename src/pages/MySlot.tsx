@@ -68,7 +68,7 @@ export default function MySlot() {
   const finalizeStopRent = async () => {
     if (!selectedSlot) return;
     try {
-      const res = await fetch(`http://localhost:3000/gate/mqtt/stop/${selectedSlot._id}`, {
+      const res = await fetch(`${API_URL}/gate/mqtt/stop/${selectedSlot._id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
