@@ -8,6 +8,7 @@ interface Slot {
   renter?: string;
   rentedAt?: string;
   available?: boolean;
+  gateId: string;
 }
 
 const API_URL = import.meta.env.VITE_URL_API;
@@ -65,6 +66,7 @@ export default function MySlot() {
     return () => clearInterval(interval);
   }, [selectedSlot]);
 
+  /*
   const finalizeStopRent = async () => {
     if (!selectedSlot) return;
     try {
@@ -91,47 +93,46 @@ export default function MySlot() {
       setStopLoading(false);
     }
   };
-
+  */
   const handleStopRent = async () => {
-    if (!selectedSlot) return;
+  if (!selectedSlot) return;
 
-    if (!confirmStop) {
-      setConfirmStop(true);
+  if (!confirmStop) {
+    setConfirmStop(true);
+    return;
+  }
+
+  setStatus("กำลังปิดไม้กั้นและรอ ACK...");
+  setStopLoading(true);
+
+  try {
+    const res = await fetch(`${API_URL}/gate/mqtt/stop/${selectedSlot._id}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      setStatus(data.error || "Failed to stop rent");
+      setStopLoading(false);
       return;
     }
 
-    setStatus("Sending CLOSE command...");
-    setStopLoading(true);
+    // backend รอจนไม้กั้นปิดและสร้าง receipt เสร็จ
+    alert(`ค่าใช้จ่ายทั้งหมด ${data.receipt.cost} บาท`);
+    setMySlots(prev => prev.filter(slot => slot._id !== selectedSlot._id));
+    setSelectedSlot(null);
+    setConfirmStop(false);
+    setStopLoading(false);
+    setStatus("Rent stopped and receipt generated");
+  } catch (err) {
+    console.error(err);
+    setStatus("Network error");
+    setStopLoading(false);
+  }
+};
 
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-      const res = await fetch(`${API_URL}/gate/mqtt`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ command: "CLOSE" }),
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!res.ok) {
-        const data = await res.json();
-        setStatus(data.error || "Failed to send command");
-        setStopLoading(false);
-        return;
-      }
-
-      const data = await res.json();
-      setStatus(`Gate ${data.ack}, finalizing stop rent...`);
-      finalizeStopRent();
-    } catch (err: any) {
-      if (err.name === "AbortError") setStatus("Timeout waiting for gate to close.");
-      else setStatus("Network error");
-      setStopLoading(false);
-    }
-  };
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f5f5f5", paddingTop: "50px" }}>
